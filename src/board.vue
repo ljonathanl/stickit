@@ -1,7 +1,8 @@
 <template>
 	<div class="board">
 		<slot></slot>
-		<dnd class="contents" source=true target=true>
+		<dnd class="contents" :source=true :target=true
+			:drop="drop" :drag-start="dragStart" :drag-end="dragEnd">
 	    	<note v-for="item in items" :model="item"/>
 	    </dnd>	  
 	</div>
@@ -29,25 +30,43 @@
 <script>
 	import note from './note.vue'
 	import dnd from './dnd.vue'
-
-	var items = [
-		{
-			"title": "Update ansible for G03R02",
-			"id": "tsk-1457962240",
-			"x": 1040,
-			"y": 907,
-			"category": "other",
-			"parent": null
-		},
-    ]
-
+	import model from './model.js'
 
 	export default {
 	  	name: 'board',
-	  	data () { return {items: items} },
+	  	data () { return {items: model.items} },
 	  	components: {
 	  		note,
 	  		dnd
-	  	}
+	  	},
+		methods: {
+			dragStart(event) {
+				if (dragTemp) return;
+				dragTemp = {};
+				dragTemp.item = event.target.dataset.id;
+				dragTemp.from = "kanban";
+				dragTemp.x = event.offsetX;
+				dragTemp.y = event.offsetY;
+			},
+			dragEnd(event) {
+				dragTemp = null;
+			},
+			drop(event) {
+				var item = dragTemp.item;
+				var offsetX = dragTemp.x;
+				var offsetY = dragTemp.y;
+				if (dragTemp.from != 'kanban') {
+					offsetX = offsetY = 0;
+				}
+				var position = getDropPosition(event, dragTemp.x, dragTemp.y);
+				var lastContainer = dragTemp.from;
+				var action = {
+					id: item,
+					to: position,
+					from: lastContainer   
+				};
+				emit('move', action);
+			},
+		},	  	
 	}
 </script>
