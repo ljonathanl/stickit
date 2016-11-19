@@ -15,6 +15,8 @@
 
 
 <script>
+	var dragData = {}; 
+
 	export default {
 	  	name: 'dnd',
 	  	props: {
@@ -30,21 +32,23 @@
 				event.target.classList.add('dragging');
 			    event.dataTransfer.effectAllowed = 'move';
 			    // Need to set to something or else drag doesn't start
-			    event.dataTransfer.setData('fake', '*');
+			    event.dataTransfer.setData('stickit', 'v1.0.0');
+			    dragData = {};
 			    if (typeof(this.dragStart) === 'function') {
-			    	this.dragStart(event);
+			    	this.dragStart(event, dragData);
 			    }
 			    this.$el.addEventListener('dragend', this.handleDragEnd, false);
 			},
 			handleDragEnd(event) {
 				event.target.classList.remove('dragging');
 				if (typeof(this.dragEnd) === 'function') {
-					this.dragEnd(event);
+					this.dragEnd(event, dragData);
 				}
+				dragData = null;
 			},
 			handleDragOver(event) {
 				if (typeof(this.acceptDrop) === 'function') {
-					if (!this.acceptDrop(event)) return false;
+					if (!this.acceptDrop(event, dragData)) return false;
 				} 
 				event.preventDefault();
 				event.stopPropagation();
@@ -58,12 +62,12 @@
 			},
 			handleDrop(event) {
 				if (typeof(this.acceptDrop) === 'function') {
-					if (!this.acceptDrop(event)) return false;
+					if (!this.acceptDrop(event, dragData)) return false;
 				} 
 				event.preventDefault(); 
 				event.stopPropagation();
 				if (typeof(this.drop) === 'function') {
-					this.drop(event);
+					this.drop(event, dragData);
 				}
 				this.$el.classList.remove('drag-over');
 				return false;

@@ -1,9 +1,9 @@
 <template>
 	<div class="board">
-		<slot></slot>
+		<box v-for="box in boxes" :box="box"></box>
 		<dnd class="contents" :source=true :target=true
 			:drop="drop" :drag-start="dragStart" :drag-end="dragEnd">
-	    	<note v-for="item in items" :model="item"/>
+	    	<note v-for="note in notes" :note="note"/>
 	    </dnd>	  
 	</div>
 </template>
@@ -31,41 +31,59 @@
 	import note from './note.vue'
 	import dnd from './dnd.vue'
 	import model from './model.js'
+	import box from './box.vue'
+
+	function getDropPosition(event, offsetX, offsetY) {
+		var node = event.target;
+		var nodeOffsetX = 0; 
+		var nodeOffsetY = 0;
+		while (node != document) {
+			nodeOffsetX += node.clientLeft;
+			nodeOffsetY += node.clientTop;
+			node = node.parentNode;
+		}
+		var x = event.clientX - (offsetX + nodeOffsetX) + window.scrollX;
+		var y = event.clientY - (offsetY + nodeOffsetY) + window.scrollY;  
+		return {x: x, y: y};
+	}
 
 	export default {
 	  	name: 'board',
-	  	data () { return {items: model.items} },
+	  	data () { return {notes: model.notes, boxes: model.boxes} },
 	  	components: {
 	  		note,
-	  		dnd
+	  		dnd,
+	  		box
 	  	},
 		methods: {
-			dragStart(event) {
-				if (dragTemp) return;
-				dragTemp = {};
-				dragTemp.item = event.target.dataset.id;
-				dragTemp.from = "kanban";
-				dragTemp.x = event.offsetX;
-				dragTemp.y = event.offsetY;
+			dragStart(event, dragData) {
+				if (dragData.note) return;
+				dragData.note = event.target.dataset.id;
+				dragData.from = 'board';
+				dragData.x = event.offsetX;
+				dragData.y = event.offsetY;
 			},
-			dragEnd(event) {
-				dragTemp = null;
+			dragEnd(event, dragData) {
+				dragData = null;
 			},
-			drop(event) {
-				var item = dragTemp.item;
-				var offsetX = dragTemp.x;
-				var offsetY = dragTemp.y;
-				if (dragTemp.from != 'kanban') {
+			drop(event, dragData) {
+				var note = dragData.note;
+				if (dragData.new) {
+					model.execute('create', {id: note})
+				}
+				var offsetX = dragData.x;
+				var offsetY = dragData.y;
+				if (dragData.from != 'board') {
 					offsetX = offsetY = 0;
 				}
-				var position = getDropPosition(event, dragTemp.x, dragTemp.y);
-				var lastContainer = dragTemp.from;
+				var position = getDropPosition(event, dragData.x, dragData.y);
+				var lastContainer = dragData.from;
 				var action = {
-					id: item,
+					id: note,
 					to: position,
 					from: lastContainer   
 				};
-				emit('move', action);
+				model.execute('move', action);
 			},
 		},	  	
 	}

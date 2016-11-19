@@ -1,29 +1,84 @@
 <template>
-	<div class="task" :data-id="model.id" :style="{left: model.x + 'px', top: model.y + 'px'}" draggable=true>
-		<dnd class="task-content" :target=true :drop="drop" :accept-drop="acceptDrop">
-			<div v-if="model.sticker" class="sticker" :class="model.sticker" @click.stop="toggleSticker"></div>
-			<h3>{{model.title}}</h3>
+	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" draggable=true>
+		<dnd class="note-content" :target=true :drop="drop" :accept-drop="acceptDrop">
+			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
+			<h3>{{note.title}}</h3>
 		</dnd>
-		<dnd v-if="model.task" :source=true :drag-start="dragStart" :drag-end="dragEnd">
-			<note :model="model.task" class="innerTask"/>
+		<dnd v-if="note.note" :source=true :drag-start="dragStart">
+			<note :note="note.note" class="inner-note"/>
 		</dnd>
 	</div>
 </template>
 
+<script>
+	import dnd from './dnd.vue'
+	import model from './model.js'
+
+	export default {
+	  	name: 'note',
+	  	props: {
+    		note: Object,
+  		},
+  		components: {
+	  		dnd
+	  	},
+		methods: {
+			dragStart(event, dragData) {
+				event.stopPropagation();
+				dragData.note = this.note.note.id;
+				dragData.from = this.note.id;
+				dragData.x = event.offsetX;
+				dragData.y = event.offsetY;
+			},
+			drop(event, dragData) {
+				var noteId = dragData.note;
+				if (dragData.new) {
+					model.execute('create', {id: noteId})
+				}
+				var lastContainer = dragData.from;
+				var action = {
+					id: noteId,
+					to: this.note.id,
+					from: lastContainer  
+				}
+				model.execute('add', action);
+			},
+			acceptDrop: function(event, dragData) {
+				var note = model.notesMap[dragData.note];
+				while (note) {
+					if (note.id == this.note.id) return false;
+					note = note.note;
+				}
+				return true;
+			},
+			edit() {
+				model.showNote(this.note.id);
+			},
+			toggleSticker: function() {
+				if (model.currentSticker == this.note.sticker) {
+					model.currentSticker = null;
+				} else {
+					model.currentSticker = this.note.sticker;
+				}
+			}
+		}		  	
+	}
+</script>
+
 <style>
-.task {
+.note {
 	position: absolute;
 	cursor: -webkit-grab;
 	cursor: grab;
 }
 
-.task-content {
+.note-content {
 	width: 150px;
 	background-color: #999;
 	border: 1px solid #666;
 }
 
-.innerTask {
+.inner-note {
 	position: initial;
 	margin-top: -1px;
 }
@@ -34,63 +89,7 @@ h3 {
 	text-align: center;
 }
 
-.innerTask h3 {
+.inner-note h3 {
 	margin: 3px 10px;
 }
 </style>
-
-
-<script>
-	import dnd from './dnd.vue'
-
-	export default {
-	  	name: 'note',
-	  	props: {
-    		model: Object,
-  		},
-  		components: {
-	  		dnd
-	  	},
-		methods: {
-			dragStart(event) {
-				event.stopPropagation();
-				dragTemp = {};
-				dragTemp.item = this.model.task.id;
-				dragTemp.from = this.model.id;
-				dragTemp.x = event.offsetX;
-				dragTemp.y = event.offsetY;
-			},
-			drop(event) {
-				var item = dragTemp.item;
-				var lastContainer = dragTemp.from;
-				var action = {
-					id: item,
-					to: this.model.id,
-					from: lastContainer  
-				}
-				emit('add', action);
-			},
-			dragEnd: function(event) {
-				dragTemp = null;
-			},
-			acceptDrop: function(event) {
-				var task = items[dragTemp.item];
-				while (task) {
-					if (task.id == this.model.id) return false;
-					task = task.task;
-				}
-				return true;
-			},
-			edit() {
-				showTask(this.model.id);
-				},
-				toggleSticker: function() {
-				if (kanban.currentSticker == this.model.sticker) {
-					kanban.currentSticker = null;
-				} else {
-					kanban.currentSticker = this.model.sticker;
-				}
-			}
-		}		  	
-	}
-</script>
