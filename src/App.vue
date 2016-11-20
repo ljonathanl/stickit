@@ -10,6 +10,18 @@
     import board from './board.vue'
     import appMenu from './app-menu.vue'
     import editNote from './edit-note.vue'
+    import model from './model.js'
+
+    function showNoteByPath() {
+        var path = window.location.hash;
+        model.showNote(path.substring(1));    
+    } 
+
+    window.addEventListener('hashchange', function() {
+        showNoteByPath();
+    });
+
+    showNoteByPath();
 
     export default {
         name: 'app',

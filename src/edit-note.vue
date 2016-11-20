@@ -34,10 +34,13 @@
 			<div class="right-panel" @click.stop>
 				<p>
 					<label>Description</label>
-					<!--<div v-if="!editingDescription" class="description" @dblclick="startEditDescription">{{{note.description ? note.description : 'Double click to edit description'}}}</div>
+					<div v-if="!editingDescription" class="description" @dblclick="startEditDescription"
+						v-html="note.description ? note.description : 'Double click to edit description'">
+					</div>
 					<div v-else>
-						<textarea class="description" v-rich-editor="note.description" name="description-editor" id="description-editor"></textarea>
-					</div>-->
+						<rich-text-editor class="description" :text="note.description">
+						</rich-text-editor>
+					</div>
 				</p>
 			</div>
 			<button type="button" class="close-button" @click="close">X</button>
@@ -48,16 +51,17 @@
 
 <script>
 	import model from './model.js'
+	import richTextEditor from './rich-text-editor.vue' 
 
 
 	export default {
 	  	name: 'edit-note',
 			data() {
-				return {note: model.note, categories: model.categories, stickers: model.stickers}
+				return {note: model.note, categories: model.categories, stickers: model.stickers, editingDescription: false}
 			},
-		  props: {
-				editingNotes: Boolean,
-			}, 
+			components: {
+				richTextEditor
+			},
 			methods: {
 				edit: function() {
 					var originalNote = model.notesMap[this.note.id];
@@ -66,7 +70,7 @@
 					if (this.note.sticker == "none") {
 						this.note.sticker = null;
 					}
-					this.finishEditNotes();
+					this.finishEditDescription();
 					for (var k in model.editableProperties) {
 						if (originalNote[k] != this.note[k]) {
 							properties[k] = this.note[k];
@@ -83,14 +87,14 @@
 					this.close();
 				},
 				close: function() {
-					this.editingNotes = false;
+					this.editingDescription = false;
 					model.showNote(null);
 				},
-				startEditNotes: function() {
-					this.editingNotes = true;
+				startEditDescription: function() {
+					this.editingDescription = true;
 				},
-				finishEditNotes: function() {
-					this.editingNotes = false;
+				finishEditDescription: function() {
+					this.editingDescription = false;
 				},
 				endEditTitle: function() {
 					this.note.title = this.$refs.title.innerText;

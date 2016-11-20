@@ -29,12 +29,19 @@ module.exports = {
           name: '[name].[ext]?[hash]'
         }
       },
+      {
+        test: /\.svg$/, 
+        loader: 'html-loader'
+      }
     ]
   },
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue'
-    }
+    },
+    alias: {
+      'quill$': path.resolve(__dirname, 'node_modules/quill/quill.js'),
+    },
   },
   devServer: {
     historyApiFallback: true,
