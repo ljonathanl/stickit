@@ -5,30 +5,57 @@ var model = {
 	notes: [],
     archive: [],
     notesMap: {},
+	editableProperties: {title: true, category: true, decsription: true, sticker: true},
+	categories: ['admin', 'developer', 'partner', 'db', 'impediment', 'bug', 'release', 'other'],
+  	stickers: ['blue', 'red', 'yellow', 'purple', 'green', 'brown', 'pink', 'orange', 'black'],
+	note: {
+		show: false,
+		id: "",
+		title: "",
+		category: null,
+		decsription: "",
+		sticker: null
+	},  
     boxes: [
-        {title: "backlog"},
-        {title: "bug"},
-        {title: "technical"},
-        {title: "todo"},
-        {title: "development"},
-        {title: "done"},
-        {title: "qualification"},
-        {title: "preproduction"},
-        {title: "production"},
-        {title: "test"},
-        {title: "back", line: true},
-        {title: "front", line: true},
-        {title: "cms", line: true},
-        {title: "other", line: true},
+        {title: 'backlog'},
+        {title: 'bug'},
+        {title: 'technical'},
+        {title: 'todo'},
+        {title: 'development'},
+        {title: 'done'},
+        {title: 'qualification'},
+        {title: 'preproduction'},
+        {title: 'production'},
+        {title: 'test'},
+        {title: 'back', line: true},
+        {title: 'front', line: true},
+        {title: 'cms', line: true},
+        {title: 'other', line: true},
     ],
     execute(actionName, actionValue) {
     	console.log('execute', actionName, actionValue)
     	actions[actionName](actionValue)
     	save()
     },
-    showNote(noteId) {
-    	console.log('showNote', noteId)
+    showNote(id) {
+    	console.log('showNote', id)
+		var note = this.notesMap[id];
+		if (!note) {
+			history.pushState("", document.title, window.location.pathname);
+			this.note.show = false;
+		} else {
+			clone(note, this.note);
+			this.note.show = true;
+			window.location.hash = id;
+		}		
     }
+}
+
+function clone(original, copy) {
+	for (var k in model.editableProperties) {
+		copy[k] = original[k]
+	}
+	copy.id = original.id
 }
 
 function remove(items, item) {

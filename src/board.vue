@@ -49,7 +49,9 @@
 
 	export default {
 	  	name: 'board',
-	  	data () { return {notes: model.notes, boxes: model.boxes} },
+	  	data() {
+			return {notes: model.notes, boxes: model.boxes} 
+		},
 	  	components: {
 	  		note,
 	  		dnd,

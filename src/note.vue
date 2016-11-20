@@ -1,5 +1,5 @@
 <template>
-	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" draggable=true>
+	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" draggable=true @dblclick.stop="edit">
 		<dnd class="note-content" :target=true :drop="drop" :accept-drop="acceptDrop">
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>

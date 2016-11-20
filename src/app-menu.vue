@@ -12,7 +12,7 @@
 	import dnd from './dnd.vue'
 
 	export default {
-	  	name: 'bottom-menu',
+	  	name: 'app-menu',
 	  	components: {
 	  		dnd
 	  	},
