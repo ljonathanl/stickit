@@ -155,9 +155,9 @@
 	.description {
 		width: 488px;
 		height: 470px;
-		overflow: auto;
 		border: 1px solid #BBB;
 		padding: 5px;
+		box-sizing: border-box;
 	}
 	
 	.buttons {

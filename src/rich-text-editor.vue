@@ -1,5 +1,5 @@
 <template>
-	<div></div>  
+	<div v-html="text"></div>  
 </template>
 
 <script>
@@ -7,6 +7,7 @@
 
     import Toolbar from 'quill/modules/toolbar';
     import Snow from 'quill/themes/snow';
+    import Bubble from 'quill/themes/bubble';
 
     import Bold from 'quill/formats/bold';
     import Italic from 'quill/formats/italic';
@@ -15,6 +16,7 @@
     Quill.register({
         'modules/toolbar': Toolbar,
         'themes/snow': Snow,
+        'themes/bubble': Bubble,
         'formats/bold': Bold,
         'formats/italic': Italic,
         'formats/header': Header
@@ -26,7 +28,7 @@
 		    text: String,
 		},
         mounted() {
-			var quill = new Quill(this.$el, {
+			this.quill = new Quill(this.$el, {
                 modules: {
                     toolbar: [
                         [{ header: [1, 2, false] }],
@@ -34,15 +36,25 @@
                         ['code-block']
                     ]
                 },
-                placeholder: 'Description here...',
-                theme: 'snow'
+                placeholder: '',
+                theme: 'bubble'
+            });
+            this.quill.on('text-change', function(delta, oldDelta, source) {
+                if (source == 'api') {
+                    console.log("An API call triggered this change.");
+                } else if (source == 'user') {
+                    console.log("A user action triggered this change.");
+                }
+                console.log(delta)
             });	
 		},
 	}
 </script>
 
 <style>
-	
+.ql-editor {
+    padding: 0;
+}	
 </style>
 
 
