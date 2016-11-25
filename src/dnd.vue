@@ -74,14 +74,14 @@
 			}
 		},
 		mounted() {
-			if (this.target) {
-				this.$el.addEventListener('dragover', this.handleDragOver, false);
-				this.$el.addEventListener('dragleave', this.handleDragLeave, false);
-				this.$el.addEventListener('drop', this.handleDrop, false);
-			}
-			if (this.source) {
-				this.$el.addEventListener('dragstart', this.handleDragStart, false);
-			}	
+			// if (this.target) {
+			// 	this.$el.addEventListener('dragover', this.handleDragOver, false);
+			// 	this.$el.addEventListener('dragleave', this.handleDragLeave, false);
+			// 	this.$el.addEventListener('drop', this.handleDrop, false);
+			// }
+			// if (this.source) {
+			// 	this.$el.addEventListener('dragstart', this.handleDragStart, false);
+			// }	
 		},
 		beforeDestroy() {
 			this.$el.classList.remove('dragging', 'drag-over', 'drag-enter');

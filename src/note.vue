@@ -1,28 +1,40 @@
 <template>
-	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" draggable=true @dblclick.stop="edit">
-		<dnd class="note-content" :target=true :drop="drop" :accept-drop="acceptDrop">
+	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" @dblclick.stop="edit">
+		<div class="note-content" :drop="drop" :accept-drop="acceptDrop">
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>
-		</dnd>
-		<dnd v-if="note.note" :source=true :drag-start="dragStart">
+		</div>
+		<div v-if="note.note" :source=true :drag-start="dragStart">
 			<note :note="note.note" class="inner-note"/>
-		</dnd>
+		</div>
 	</div>
 </template>
 
 <script>
-	import dnd from './dnd.vue'
 	import model from './model.js'
+	import interact from 'interact.js'
 
 	export default {
 	  	name: 'note',
 	  	props: {
     		note: Object,
   		},
-  		components: {
-	  		dnd
-	  	},
 		methods: {
+			dragMoveListener(event) {
+				var target = event.target,
+					// keep the dragged position in the data-x/data-y attributes
+					x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+					y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+				// translate the element
+				//target.style.webkitTransform =
+				target.style.transform =
+				'translate(' + x + 'px, ' + y + 'px)';
+
+				// update the posiion attributes
+				target.setAttribute('data-x', x);
+				target.setAttribute('data-y', y);
+			},
 			dragStart(event, dragData) {
 				event.stopPropagation();
 				dragData.note = this.note.note.id;
@@ -61,6 +73,14 @@
 					model.currentSticker = this.note.sticker;
 				}
 			}
+		},
+		mounted() {
+			this.interact = interact(this.$el).draggable({
+				onmove: this.dragMoveListener
+			});
+		},
+		beforeDestroy() {
+			this.interact.unset()
 		}		  	
 	}
 </script>
@@ -91,5 +111,12 @@ h3 {
 
 .inner-note h3 {
 	margin: 3px 10px;
+}
+
+.dragging {
+	opacity: 0.5;
+}
+.drag-over {
+	outline: 2px solid #F00;
 }
 </style>
