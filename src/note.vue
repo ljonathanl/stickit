@@ -1,10 +1,10 @@
 <template>
 	<div class="note" :data-id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}" @dblclick.stop="edit">
-		<div class="note-content" :drop="drop" :accept-drop="acceptDrop">
+		<div class="note-content" ref="content">
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>
 		</div>
-		<div v-if="note.note" :source=true :drag-start="dragStart">
+		<div v-if="note.note">
 			<note :note="note.note" class="inner-note"/>
 		</div>
 	</div>
@@ -28,40 +28,39 @@
 
 				// translate the element
 				//target.style.webkitTransform =
-				target.style.transform =
-				'translate(' + x + 'px, ' + y + 'px)';
+				target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 
 				// update the posiion attributes
 				target.setAttribute('data-x', x);
 				target.setAttribute('data-y', y);
 			},
-			dragStart(event, dragData) {
-				event.stopPropagation();
-				dragData.note = this.note.note.id;
-				dragData.from = this.note.id;
-				dragData.x = event.offsetX;
-				dragData.y = event.offsetY;
+			dragStartListener(event) {
+				event.target.classList.add('dragging');
+				event.target.setAttribute('data-id', this.note.id);
+				event.target.setAttribute('data-parent', this.note.parent || 'board');
 			},
-			drop(event, dragData) {
-				var noteId = dragData.note;
-				if (dragData.new) {
-					model.execute('create', {id: noteId})
-				}
-				var lastContainer = dragData.from;
+			dragEndListener(event) {
+				event.target.style.transform = null;
+				event.target.classList.remove('dragging');
+				event.target.setAttribute('data-x', 0);
+				event.target.setAttribute('data-y', 0);
+			},
+			dragEnterListener(event) {
+				event.target.classList.add('drop-target');
+			},
+			dragLeaveListener(event) {
+				event.target.classList.remove('drop-target');
+			},
+			dropListener(event) {
+				event.target.classList.remove('drop-target');
+				var item = event.relatedTarget.getAttribute('data-id');
+				var lastContainer = event.relatedTarget.getAttribute('data-parent');;
 				var action = {
-					id: noteId,
+					id: item,
 					to: this.note.id,
 					from: lastContainer  
 				}
 				model.execute('add', action);
-			},
-			acceptDrop: function(event, dragData) {
-				var note = model.notesMap[dragData.note];
-				while (note) {
-					if (note.id == this.note.id) return false;
-					note = note.note;
-				}
-				return true;
 			},
 			edit() {
 				model.showNote(this.note.id);
@@ -75,12 +74,20 @@
 			}
 		},
 		mounted() {
-			this.interact = interact(this.$el).draggable({
-				onmove: this.dragMoveListener
+			this.draggableNote = interact(this.$el).draggable({
+				onmove: this.dragMoveListener.bind(this),
+				onstart: this.dragStartListener.bind(this),
+				onend: this.dragEndListener.bind(this),
 			});
+			this.dropNote = interact(this.$refs.content).dropzone({
+				ondragenter: this.dragEnterListener.bind(this),
+				ondragleave: this.dragLeaveListener.bind(this),
+				ondrop: this.dropListener.bind(this),
+			})	
 		},
 		beforeDestroy() {
-			this.interact.unset()
+			this.draggableNote.unset();
+			this.dropNote.unset();
 		}		  	
 	}
 </script>
@@ -114,9 +121,10 @@ h3 {
 }
 
 .dragging {
-	opacity: 0.5;
+	outline: 4px dashed #F00;
+	z-index: 1000;
 }
-.drag-over {
+.drop-target {
 	outline: 2px solid #F00;
 }
 </style>

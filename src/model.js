@@ -2,7 +2,28 @@ import Vue from 'vue'
 
 var model = {
 	dragTemp: {},
-	notes: [],
+	notes: [
+		{
+			id: "id1",
+			title: "test 1",
+			category: null,
+			decsription: "",
+			sticker: null,
+			parent: null,
+			x: 150,
+			y: 20,
+		},
+		{
+			id: "id2",
+			title: "test 2",
+			category: null,
+			decsription: "",
+			sticker: null,
+			parent: null,
+			x: 150,
+			y: 200,
+		}
+	],
     archive: [],
     notesMap: {},
 	editableProperties: {title: true, category: true, decsription: true, sticker: true},
@@ -35,7 +56,7 @@ var model = {
     execute(actionName, actionValue) {
     	console.log('execute', actionName, actionValue)
     	actions[actionName](actionValue)
-    	save()
+    	//save()
     },
     showNote(id) {
     	console.log('showNote', id)
@@ -135,7 +156,7 @@ var actions = {
 	},
 }
 
-load();
+//load();
 
 for (var i = 0; i < model.notes.length; i++) {
 	var note = model.notes[i];

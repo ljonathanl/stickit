@@ -5,12 +5,7 @@
 </template>
 
 <style>
-.dragging {
-	opacity: 0.5;
-}
-.drag-over {
-	outline: 2px solid #F00;
-}
+
 </style>
 
 

@@ -1,10 +1,9 @@
 <template>
 	<div class="board">
 		<box v-for="box in boxes" :box="box"></box>
-		<dnd class="contents" :source=true :target=true
-			:drop="drop" :drag-start="dragStart" :drag-end="dragEnd">
+		<div class="contents" ref="contents">
 	    	<note v-for="note in notes" :note="note"/>
-	    </dnd>	  
+	    </div>	  
 	</div>
 </template>
 
@@ -29,23 +28,23 @@
 
 <script>
 	import note from './note.vue'
-	import dnd from './dnd.vue'
 	import model from './model.js'
 	import box from './box.vue'
+	import interact from 'interact.js'
 
-	function getDropPosition(event, offsetX, offsetY) {
-		var node = event.target;
+	function getPosition(node) {
 		var nodeOffsetX = 0; 
 		var nodeOffsetY = 0;
 		while (node != document) {
-			nodeOffsetX += node.clientLeft;
-			nodeOffsetY += node.clientTop;
+			nodeOffsetX += node.offsetLeft;
+			nodeOffsetY += node.offsetTop;
 			node = node.parentNode;
 		}
-		var x = event.clientX - (offsetX + nodeOffsetX) + window.scrollX;
-		var y = event.clientY - (offsetY + nodeOffsetY) + window.scrollY;  
+		var x = nodeOffsetX + window.scrollX;
+		var y = nodeOffsetY + window.scrollY;  
 		return {x: x, y: y};
 	}
+
 
 	export default {
 	  	name: 'board',
@@ -54,7 +53,6 @@
 		},
 	  	components: {
 	  		note,
-	  		dnd,
 	  		box
 	  	},
 		methods: {
@@ -68,25 +66,39 @@
 			dragEnd(event, dragData) {
 				dragData = null;
 			},
-			drop(event, dragData) {
-				var note = dragData.note;
-				if (dragData.new) {
-					model.execute('create', {id: note})
-				}
-				var offsetX = dragData.x;
-				var offsetY = dragData.y;
-				if (dragData.from != 'board') {
-					offsetX = offsetY = 0;
-				}
-				var position = getDropPosition(event, dragData.x, dragData.y);
-				var lastContainer = dragData.from;
+			dragEnterListener(event) {
+				event.target.classList.add('drop-target');
+			},
+			dragLeaveListener(event) {
+				event.target.classList.remove('drop-target');
+			},
+			dropListener(event) {
+				event.target.classList.remove('drop-target');
+				var item = event.relatedTarget.getAttribute('data-id');
+				var lastContainer = event.relatedTarget.getAttribute('data-parent');
+				var dx = parseFloat(event.relatedTarget.getAttribute('data-x'));
+				var dy = parseFloat(event.relatedTarget.getAttribute('data-y'));
+				var position = getPosition(event.relatedTarget);
 				var action = {
-					id: note,
-					to: position,
-					from: lastContainer   
-				};
+					id: item,
+					to: {
+							x: position.x + dx,
+							y: position.y + dy,
+						},
+					from: lastContainer  
+				}
 				model.execute('move', action);
 			},
-		},	  	
+		},
+		mounted() {
+			this.dropZone = interact(this.$refs.contents).dropzone({
+				ondragenter: this.dragEnterListener.bind(this),
+				ondragleave: this.dragLeaveListener.bind(this),
+				ondrop: this.dropListener.bind(this),
+			})	
+		},
+		beforeDestroy() {
+			this.dropZone.unset();
+		}	  	
 	}
 </script>
