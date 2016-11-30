@@ -22,6 +22,16 @@ var model = {
 			parent: null,
 			x: 150,
 			y: 200,
+		},
+		{
+			id: "id3",
+			title: "test 3",
+			category: null,
+			decsription: "",
+			sticker: null,
+			parent: null,
+			x: 150,
+			y: 300,
 		}
 	],
     archive: [],

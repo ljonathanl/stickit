@@ -62,6 +62,20 @@
 				}
 				model.execute('add', action);
 			},
+			acceptDrop(dragEvent, event, dropped, dropzone, dropElement, draggable, draggableElement) {
+				if (dropped && this.$el != draggableElement) {
+					var target = draggableElement;
+					var element = this.$el;
+					console.log(this.note.id, target, element)
+					while (element) {
+						if (element == target) return false;
+						element = element.parentNode;
+					}
+					return true;
+				} else {
+					return false;
+				}
+			},
 			edit() {
 				model.showNote(this.note.id);
 			},
@@ -83,6 +97,7 @@
 				ondragenter: this.dragEnterListener.bind(this),
 				ondragleave: this.dragLeaveListener.bind(this),
 				ondrop: this.dropListener.bind(this),
+				checker: this.acceptDrop.bind(this),
 			})	
 		},
 		beforeDestroy() {
