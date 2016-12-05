@@ -36,13 +36,12 @@
 		var nodeOffsetX = 0; 
 		var nodeOffsetY = 0;
 		while (node != document) {
+			console.log(node, node.offsetLeft, node.offsetTop)
 			nodeOffsetX += node.offsetLeft;
 			nodeOffsetY += node.offsetTop;
 			node = node.parentNode;
 		}
-		var x = nodeOffsetX + window.scrollX;
-		var y = nodeOffsetY + window.scrollY;  
-		return {x: x, y: y};
+		return {x: nodeOffsetX, y: nodeOffsetY};
 	}
 
 
@@ -79,6 +78,8 @@
 				var dx = parseFloat(event.relatedTarget.getAttribute('data-x'));
 				var dy = parseFloat(event.relatedTarget.getAttribute('data-y'));
 				var position = getPosition(event.relatedTarget);
+				debugger
+				console.log(position.x, position.y, dx, dy, event.relatedTarget.style.transform)
 				var action = {
 					id: item,
 					to: {

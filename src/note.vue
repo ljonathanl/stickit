@@ -4,9 +4,7 @@
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>
 		</div>
-		<div v-if="note.note">
-			<note :note="note.note" class="inner-note"/>
-		</div>
+		<note :note="note.note" class="inner-note" v-if="note.note"/>
 	</div>
 </template>
 
@@ -66,7 +64,7 @@
 				if (dropped && this.$el != draggableElement) {
 					var target = draggableElement;
 					var element = this.$el;
-					console.log(this.note.id, target, element)
+					//console.log(this.note.id, target, element)
 					while (element) {
 						if (element == target) return false;
 						element = element.parentNode;
@@ -92,6 +90,7 @@
 				onmove: this.dragMoveListener.bind(this),
 				onstart: this.dragStartListener.bind(this),
 				onend: this.dragEndListener.bind(this),
+				autoScroll: true,
 			});
 			this.dropNote = interact(this.$refs.content).dropzone({
 				ondragenter: this.dragEnterListener.bind(this),
