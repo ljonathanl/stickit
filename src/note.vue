@@ -1,7 +1,7 @@
 <template>
-	<draggable class="note" :id="note.id" :style="{left: note.x + 'px', top: note.y + 'px'}"
+	<draggable class="note" :style="{left: note.x + 'px', top: note.y + 'px'}"
 		:data-id="note.id" :data-parent="note.parent || 'board'" 
-		@dblclick.stop="edit">
+		@doubletap="edit()">
 		<dropzone class="note-content" :accept-drop="acceptDrop" @drop="dropListener">
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>
@@ -48,6 +48,7 @@
 				} 
 			},
 			edit() {
+				console.log("edit")
 				model.showNote(this.note.id);
 			},
 			toggleSticker: function() {

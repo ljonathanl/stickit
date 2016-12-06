@@ -69,17 +69,20 @@ var model = {
     	//save()
     },
     showNote(id) {
-    	console.log('showNote', id)
-		var note = this.notesMap[id];
-		if (!note) {
-			history.pushState("", document.title, window.location.pathname);
-			this.note.show = false;
-		} else {
-			clone(note, this.note);
-			this.note.show = true;
-			window.location.hash = id;
-		}		
-    }
+		if (this.note.id != id) {
+    		console.log('showNote', this.note.id, id)
+			var note = this.notesMap[id];
+			if (!note) {
+				this.note.show = false;
+				this.note.id = "";
+				history.pushState("", document.title, window.location.pathname);
+			} else {
+				clone(note, this.note);
+				this.note.show = true;
+				//window.location.hash = id;
+			}		
+		}
+    }, 
 }
 
 function clone(original, copy) {

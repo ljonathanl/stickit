@@ -176,6 +176,7 @@
 		background-color: #5F9EA0;
 		z-index: 99;
 		opacity: 0.5;
+		position: fixed;
 	}
 	
 	.edit-note .note {

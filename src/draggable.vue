@@ -36,14 +36,31 @@
 				target.setAttribute('data-y', 0);
                 this.$emit("dragend", event);
 			},
+            tapListener(event) {
+                console.log("tap")
+                this.$emit("tap", event);
+			},
+            doubleTapListener(event) {
+                console.log("doubletap")
+                this.$emit("doubletap", event);
+			},
+            holdListener(event) {
+                console.log("hold")
+                this.$emit("hold", event);
+			},
 		},
 		mounted() {
-			this.draggableNote = interact(this.$el).draggable({
+			this.draggableNote = interact(this.$el);
+            this.draggableNote.draggable({
 				onmove: this.dragMoveListener.bind(this),
 				onstart: this.dragStartListener.bind(this),
 				onend: this.dragEndListener.bind(this),
 				autoScroll: true,
-			});
+			})
+            this.draggableNote
+                .on("doubletap",  this.doubleTapListener.bind(this))
+                .on("tap",  this.tapListener.bind(this))
+                .on("hold",  this.holdListener.bind(this))
 		},
 		beforeDestroy() {
 			this.draggableNote.unset();
