@@ -9,7 +9,7 @@ var model = {
 			category: null,
 			decsription: "",
 			sticker: null,
-			parent: null,
+			parent: "board",
 			x: 150,
 			y: 20,
 		},
@@ -19,7 +19,7 @@ var model = {
 			category: null,
 			decsription: "",
 			sticker: null,
-			parent: null,
+			parent: "board",
 			x: 150,
 			y: 200,
 		},
@@ -29,7 +29,7 @@ var model = {
 			category: null,
 			decsription: "",
 			sticker: null,
-			parent: null,
+			parent: "board",
 			x: 150,
 			y: 300,
 		}
@@ -123,7 +123,7 @@ var actions = {
 		model.notes.push(movedNote);
 		movedNote.x = action.to.x;
 		movedNote.y = action.to.y; 
-		Vue.set(movedNote, 'parent', null);
+		Vue.set(movedNote, 'parent', "board");
 	},
 	add: function(action) {
 		var movedNote = model.notesMap[action.id];
@@ -135,6 +135,7 @@ var actions = {
 				lastNote = lastNote.note;
 			}
 			Vue.set(lastNote, 'note', container.note);
+			Vue.set(container.note, 'parent', movedNote.id);
 		}
 		Vue.set(container, 'note', movedNote); 
 		Vue.set(movedNote, 'parent', container.id);

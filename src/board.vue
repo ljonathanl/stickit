@@ -1,9 +1,9 @@
 <template>
 	<div class="board">
 		<box v-for="box in boxes" :box="box"></box>
-		<div class="contents" ref="contents">
+		<dropzone class="contents" @drop="dropListener">
 	    	<note v-for="note in notes" :note="note"/>
-	    </div>	  
+	    </dropzone>	  
 	</div>
 </template>
 
@@ -30,18 +30,11 @@
 	import note from './note.vue'
 	import model from './model.js'
 	import box from './box.vue'
-	import interact from 'interact.js'
+	import dropzone from './dropzone.vue'
 
 	function getPosition(node) {
-		var nodeOffsetX = 0; 
-		var nodeOffsetY = 0;
-		while (node != document) {
-			console.log(node, node.offsetLeft, node.offsetTop)
-			nodeOffsetX += node.offsetLeft;
-			nodeOffsetY += node.offsetTop;
-			node = node.parentNode;
-		}
-		return {x: nodeOffsetX, y: nodeOffsetY};
+		var rect = node.getBoundingClientRect();
+		return {x: rect.left + window.scrollX, y: rect.top + + window.scrollY};
 	}
 
 
@@ -52,54 +45,21 @@
 		},
 	  	components: {
 	  		note,
-	  		box
+	  		box,
+			dropzone,
 	  	},
 		methods: {
-			dragStart(event, dragData) {
-				if (dragData.note) return;
-				dragData.note = event.target.dataset.id;
-				dragData.from = 'board';
-				dragData.x = event.offsetX;
-				dragData.y = event.offsetY;
-			},
-			dragEnd(event, dragData) {
-				dragData = null;
-			},
-			dragEnterListener(event) {
-				event.target.classList.add('drop-target');
-			},
-			dragLeaveListener(event) {
-				event.target.classList.remove('drop-target');
-			},
 			dropListener(event) {
-				event.target.classList.remove('drop-target');
 				var item = event.relatedTarget.getAttribute('data-id');
 				var lastContainer = event.relatedTarget.getAttribute('data-parent');
-				var dx = parseFloat(event.relatedTarget.getAttribute('data-x'));
-				var dy = parseFloat(event.relatedTarget.getAttribute('data-y'));
 				var position = getPosition(event.relatedTarget);
-				debugger
-				console.log(position.x, position.y, dx, dy, event.relatedTarget.style.transform)
 				var action = {
 					id: item,
-					to: {
-							x: position.x + dx,
-							y: position.y + dy,
-						},
+					to: position,
 					from: lastContainer  
 				}
 				model.execute('move', action);
 			},
 		},
-		mounted() {
-			this.dropZone = interact(this.$refs.contents).dropzone({
-				ondragenter: this.dragEnterListener.bind(this),
-				ondragleave: this.dragLeaveListener.bind(this),
-				ondrop: this.dropListener.bind(this),
-			})	
-		},
-		beforeDestroy() {
-			this.dropZone.unset();
-		}	  	
 	}
 </script>
