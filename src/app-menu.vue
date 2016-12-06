@@ -1,30 +1,32 @@
 <template>
-	<dnd class="menu" :source=true :drag-start="dragStart">
-		<div class="new-note" draggable=true>
+	<div class="menu">
+		<draggable class="new-note" @dragstart="dragStart"
+			:data-id="noteId">
 			<span class="icon-file-empty"></span>New note
-		</div>
+		</draggable>
 		<!--archive></archive>
 		<trash></trash-->
-	</dnd> 
+	</div> 
 </template>
 
 <script>
-	import dnd from './dnd.vue'
+
+	import draggable from './draggable.vue'
+	import model from './model.js'
 
 	export default {
 	  	name: 'app-menu',
 	  	components: {
-	  		dnd
+			draggable
 	  	},
+		data() {
+			return {noteId:""}
+		},
 		methods: {
-			dragStart: function(event, dragData) {
+			dragStart: function(event) {
 				var id = "note-" + Math.floor(new Date().getTime() / 1000);
-				dragData.note = id;
-				dragData.new = true;
-				dragData.from = "menu";
-				dragData.x = event.offsetX;
-				dragData.y = event.offsetY;
-
+				this.noteId = id;
+				model.execute('create', {id})
 			},
 		}	  	
 	}

@@ -26,7 +26,7 @@
 			},
 			dragStartListener(event) {
 				event.target.classList.add('dragging');
-                this.$emit("dragStart", event);
+                this.$emit("dragstart", event);
 			},
 			dragEndListener(event) {
                 var target = event.target;
@@ -34,7 +34,7 @@
 				target.classList.remove('dragging');
 				target.setAttribute('data-x', 0);
 				target.setAttribute('data-y', 0);
-                this.$emit("dragEnd", event);
+                this.$emit("dragend", event);
 			},
 		},
 		mounted() {
