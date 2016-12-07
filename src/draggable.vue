@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="draggable">
 	    <slot/>
     </div>    
 </template>
@@ -58,6 +58,7 @@
 				autoScroll: true,
 			})
             this.draggableNote
+				.styleCursor(false)
                 .on("doubletap",  this.doubleTapListener.bind(this))
                 .on("tap",  this.tapListener.bind(this))
                 .on("hold",  this.holdListener.bind(this))
@@ -70,7 +71,12 @@
 
 <style>
 .dragging {
-	outline: 4px dashed #F00;
+	outline: 4px solid #F00;
 	z-index: 1000;
+}
+
+.draggable {
+	cursor: -webkit-grab;
+	cursor: grab;
 }
 </style>

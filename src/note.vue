@@ -65,8 +65,6 @@
 <style>
 .note {
 	position: absolute;
-	cursor: -webkit-grab;
-	cursor: grab;
 }
 
 .note-content {

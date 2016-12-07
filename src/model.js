@@ -79,7 +79,7 @@ var model = {
 			} else {
 				clone(note, this.note);
 				this.note.show = true;
-				//window.location.hash = id;
+				window.location.hash = id;
 			}		
 		}
     }, 
