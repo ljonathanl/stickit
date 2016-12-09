@@ -12,7 +12,6 @@
 		position: relative;
 		width: 3000px;
 		height: 1000px;
-		border: 4px solid #5F9EA0;
 		margin-bottom: 100px;
 	}
 
@@ -32,11 +31,11 @@
 	import box from './box.vue'
 	import dropzone from './dropzone.vue'
 
-	function getPosition(node) {
+	function getRelativePosition(reference, node) {
 		var rect = node.getBoundingClientRect();
-		return {x: rect.left + window.scrollX, y: rect.top + + window.scrollY};
+		var refRect = reference.getBoundingClientRect();
+		return {x: rect.left - refRect.left, y: rect.top - refRect.top};
 	}
-
 
 	export default {
 	  	name: 'board',
@@ -52,7 +51,7 @@
 			dropListener(event) {
 				var item = event.relatedTarget.getAttribute('data-id');
 				var lastContainer = event.relatedTarget.getAttribute('data-parent');
-				var position = getPosition(event.relatedTarget);
+				var position = getRelativePosition(this.$el, event.relatedTarget);
 				var action = {
 					id: item,
 					to: position,
