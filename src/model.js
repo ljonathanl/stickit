@@ -138,7 +138,7 @@ var actions = {
 				lastNote = lastNote.note;
 			}
 			Vue.set(lastNote, 'note', container.note);
-			Vue.set(container.note, 'parent', movedNote.id);
+			Vue.set(container.note, 'parent', lastNote.id);
 		}
 		Vue.set(container, 'note', movedNote); 
 		Vue.set(movedNote, 'parent', container.id);
