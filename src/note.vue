@@ -2,7 +2,7 @@
 	<draggable class="note" :style="{left: note.x + 'px', top: note.y + 'px'}"
 		:data-id="note.id" :data-parent="note.parent || 'board'" 
 		@doubletap="edit()">
-		<dropzone class="note-content" :accept-drop="acceptDrop" @drop="dropListener">
+		<dropzone :class="['note-content', note.color]" :accept-drop="acceptDrop" @drop="dropListener">
 			<div v-if="note.sticker" class="sticker" :class="note.sticker" @click.stop="toggleSticker"></div>
 			<h3>{{note.title}}</h3>
 		</dropzone>
@@ -65,12 +65,14 @@
 <style>
 .note {
 	position: absolute;
+	box-sizing: border-box;
 }
 
 .note-content {
 	width: 150px;
-	background-color: #999;
+	/*background-color: #999;*/
 	border: 1px solid #666;
+	transition: all 500ms ease;
 }
 
 .inner-note {
@@ -78,13 +80,28 @@
 	margin-top: -1px;
 }
 
-h3 {
+
+.inner-note h3 {
+	margin: 3px 10px;
+}
+
+h3, .dragging > .note-content h3 {
 	font-size: 14px;
 	margin: 10px;
 	text-align: center;
 }
 
-.inner-note h3 {
-	margin: 3px 10px;
+.blue {
+	background-color: #1dace6;
+}	
+
+pink {
+	background-color: #fd4db0;
 }
+
+yellow {
+	background-color: #e7f150;
+}
+
+
 </style>

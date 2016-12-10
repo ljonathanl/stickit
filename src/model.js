@@ -6,7 +6,7 @@ var model = {
 		{
 			id: "id1",
 			title: "test 1",
-			category: null,
+			color: "pink",
 			decsription: "",
 			sticker: null,
 			parent: "board",
@@ -16,7 +16,7 @@ var model = {
 		{
 			id: "id2",
 			title: "test 2",
-			category: null,
+			color: "yellow",
 			decsription: "",
 			sticker: null,
 			parent: "board",
@@ -26,7 +26,7 @@ var model = {
 		{
 			id: "id3",
 			title: "test 3",
-			category: null,
+			color: "blue",
 			decsription: "",
 			sticker: null,
 			parent: "board",
@@ -36,9 +36,8 @@ var model = {
 	],
     archive: [],
     notesMap: {},
-	editableProperties: {title: true, category: true, decsription: true, sticker: true},
-	categories: ['admin', 'developer', 'partner', 'db', 'impediment', 'bug', 'release', 'other'],
-  	stickers: ['blue', 'red', 'yellow', 'purple', 'green', 'brown', 'pink', 'orange', 'black'],
+	editableProperties: {title: true, color: true, decsription: true, sticker: true},
+  	colors: ['blue', 'pink', 'yellow'],
 	note: {
 		show: false,
 		id: "",

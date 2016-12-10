@@ -48,6 +48,6 @@
 
 <style>
 .drop-target {
-	outline: 2px solid #FF0000;
+	outline: 3px solid #CCCCCC;
 }
 </style>

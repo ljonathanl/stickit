@@ -2,7 +2,7 @@
 	<div class="menu">
 		<draggable class="new-note" @dragstart="dragStart"
 			:data-id="noteId">
-			<span class="icon-file-empty"></span>New note
+			New note
 		</draggable>
 		<!--archive></archive>
 		<trash></trash-->

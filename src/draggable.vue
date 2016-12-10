@@ -71,7 +71,8 @@
 
 <style>
 .dragging {
-	box-shadow: 5px 5px 3px #656565;
+	box-shadow: 5px 5px 3px #999;
+	opacity: 0.7;
 	z-index: 1000;
 }
 
