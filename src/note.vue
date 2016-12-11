@@ -70,7 +70,6 @@
 
 .note-content {
 	width: 150px;
-	/*background-color: #999;*/
 	border: 1px solid #666;
 	transition: outline 500ms ease;
 }

@@ -11,7 +11,7 @@ var model = {
 			sticker: null,
 			parent: "board",
 			x: 150,
-			y: 20,
+			y: 120,
 		},
 		{
 			id: "id2",
@@ -47,20 +47,27 @@ var model = {
 		sticker: null
 	},  
     boxes: [
-        {title: 'backlog'},
-        {title: 'bug'},
-        {title: 'technical'},
-        {title: 'todo'},
-        {title: 'development'},
-        {title: 'done'},
-        {title: 'qualification'},
-        {title: 'preproduction'},
-        {title: 'production'},
-        {title: 'test'},
-        {title: 'back', line: true},
-        {title: 'front', line: true},
-        {title: 'cms', line: true},
-        {title: 'other', line: true},
+        {
+			title: 'todo',
+			width: 400,
+			height: 600,
+			x: 0,
+			y: 0,
+		},
+        {
+			title: 'ongoing',
+			width: 400,
+			height: 600,
+			x: 400,
+			y: 0,
+		},
+        {
+			title: 'done',
+			width: 400,
+			height: 600,
+			x: 800,
+			y: 0,
+		},
     ],
     execute(actionName, actionValue) {
     	console.log('execute', actionName, actionValue)
