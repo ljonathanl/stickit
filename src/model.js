@@ -149,7 +149,7 @@ var actions = {
 		}
 	},
 	create: function(action) {
-		var note = {title: "New note", id: action.id, x: 0, y: 0, category: "other"};
+		var note = {title: "New note " + action.color, id: action.id, x: 0, y: 0, color: action.color};
 		model.notesMap[note.id] = note;
 	},
 	archive: function(action) {
