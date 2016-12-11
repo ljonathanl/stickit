@@ -72,7 +72,7 @@
 	width: 150px;
 	/*background-color: #999;*/
 	border: 1px solid #666;
-	transition: all 500ms ease;
+	transition: outline 500ms ease;
 }
 
 .inner-note {
